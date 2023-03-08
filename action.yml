@@ -17,6 +17,10 @@ inputs:
     description: "The update strategy, can be 'reuse', 'eager' or 'all'"
     required: false
     default: "reuse"
+  create-as-draft:
+    description: "Create the PR as a draft"
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -47,7 +51,7 @@ runs:
 
     - name: "Create PR"
       if: steps.detect-changes.outputs.changed == 'true'
-      run: gh pr create --title "${{ inputs.pr-title }}" --body "Update pdm.lock" --head dep/update-pdm-lock || true
+      run: gh pr create --title "${{ inputs.pr-title }}" --body "Update pdm.lock" --head dep/update-pdm-lock "${{ inputs.create-as-draft && '--draft' }}" || true
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
